@@ -11,8 +11,8 @@ SECOND_ARG_CONSTANT = '{2}'
 URLS_FILE_CONSTANT = 'urls'
 
 # JWT
-TOKEN_AUTH_URL_CONSTANT = 'token_auth/'
-TOKEN_REFRESH_URL_CONSTANT = 'token_refresh/'
+TOKEN_OBTAIN_URL_CONSTANT = 'token/'
+TOKEN_REFRESH_URL_CONSTANT = 'token/refresh/'
 
 # custom_user
 CUSTOM_USER_URL_CONSTANT = 'users/'
