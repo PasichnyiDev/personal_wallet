@@ -23,5 +23,5 @@ from .views import get_all_urls
 urlpatterns = [
     path(ADMIN_URL_CONSTANT, admin.site.urls),
     path(GET_URLS_CONSTANT, get_all_urls),
-    # path(CUSTOM_USER_URL_CONSTANT, include('{}.{}'.format(CUSTOM_USER_APP_NAME, URLS_FILE_CONSTANT))),
+    path(CUSTOM_USER_URL_CONSTANT, include('{}.{}'.format(CUSTOM_USER_APP_NAME, URLS_FILE_CONSTANT))),
 ]
