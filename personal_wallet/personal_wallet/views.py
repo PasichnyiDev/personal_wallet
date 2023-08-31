@@ -11,12 +11,10 @@ from .utils_for_urls import URLS_FOR_FRONTEND
 @api_view(['GET'])
 def get_all_urls(request: HttpRequest) -> Response:
     """
-    View that return a json object with all project urls.
+    View provides getting a json object with all project urls.
 
-    Parameters:
-    request (HttpRequest): The HTTP request object.
+    :param: request: HttpRequest;
 
-    Returns:
-    Response: JSON object with all project urls.
+    :return: Response: JSON object with all project urls.
     """
-    return Response(data=json.dumps(URLS_FOR_FRONTEND), status=HTTP_200_OK)
+    return Response(data=URLS_FOR_FRONTEND, status=HTTP_200_OK)

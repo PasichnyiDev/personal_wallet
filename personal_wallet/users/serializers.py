@@ -1,13 +1,14 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 ACCESS_TOKEN_RESPONSE_KEY = 'access_token'
 REFRESH_TOKEN_RESPONSE_KEY = 'refresh_token'
-MSG_EMAIL_ALREADY_EXIST = 'A user with this email address already exists.'
+MSG_USERNAME_ALREADY_EXIST = 'A user with this username address already exists.'
 MSG_INCORRECT_CREDENTIALS = 'Incorrect credentials.'
-MSG_EMAIL_AND_PASSWORD_NEEDED = 'Email and password needed.'
+MSG_USERNAME_AND_PASSWORD_NEEDED = 'Username and password needed.'
 
 User = get_user_model()
 
@@ -17,7 +18,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'password')
+        fields = ('username', 'password')
 
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -27,19 +28,19 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
     def validate(self, data):
-        email = data.get('email')
-        if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError(MSG_EMAIL_ALREADY_EXIST)
+        username = data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise serializers.ValidationError(MSG_USERNAME_ALREADY_EXIST)
         return data
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        email = attrs.get('email')
-        password = attrs.get('password')
+        username = attrs.get("username")
+        password = attrs.get("password")
 
-        if email and password:
-            user = User.objects.filter(email=email).first()
+        if username and password:
+            user = User.objects.filter(username=username).first()
             if user and user.check_password(password):
                 refresh = self.get_token(user)
                 attrs[REFRESH_TOKEN_RESPONSE_KEY] = str(refresh)
@@ -48,8 +49,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 msg = MSG_INCORRECT_CREDENTIALS
                 raise serializers.ValidationError(msg)
         else:
-            msg = MSG_EMAIL_AND_PASSWORD_NEEDED
+            msg = MSG_USERNAME_AND_PASSWORD_NEEDED
             raise serializers.ValidationError(msg)
 
         return attrs
 
+    def get_token(self, user):
+        refresh = RefreshToken.for_user(user)
+        return refresh

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'wallets',
     'rest_framework',
 ]
 
@@ -138,4 +139,4 @@ SIMPLE_JWT = {
 
 # custom user
 AUTH_USER_MODEL = 'users.WalletUser'
-AUTHENTICATION_BACKENDS = ['users.authentication.EmailBackend']
+
