@@ -17,11 +17,12 @@ from django.contrib import admin
 from django.urls import path, include
 
 from .utils_for_urls import ADMIN_URL_CONSTANT, GET_URLS_CONSTANT, CUSTOM_USER_URL_CONSTANT, CUSTOM_USER_APP_NAME, \
-                            URLS_FILE_CONSTANT
+                            URLS_FILE_CONSTANT, WALLET_BASE_URL, WALLET_APP_NAME
 from .views import get_all_urls
 
 urlpatterns = [
     path(ADMIN_URL_CONSTANT, admin.site.urls),
     path(GET_URLS_CONSTANT, get_all_urls),
     path(CUSTOM_USER_URL_CONSTANT, include('{}.{}'.format(CUSTOM_USER_APP_NAME, URLS_FILE_CONSTANT))),
+    path(WALLET_BASE_URL, include('{}.{}'.format(WALLET_APP_NAME, URLS_FILE_CONSTANT))),
 ]

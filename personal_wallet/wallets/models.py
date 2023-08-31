@@ -1,3 +1,13 @@
 from django.db import models
 
-# Create your models here.
+
+class Wallet(models.Model):
+    pass
+
+
+class Expense(models.Model):
+    pass
+
+
+class Income(models.Model):
+    pass

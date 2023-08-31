@@ -25,6 +25,7 @@ CUSTOM_USER_REGISTRATION_URL_CONSTANT = 'register/'
 # wallet urls constants
 WALLET_BASE_URL = 'v1/wallet/'
 WALLET_ID_CONSTANT = '<int:wallet_id>'
+WALLET_APP_NAME = 'wallets'
 
 
 def get_wallet_urls(for_frontend: bool = True):
