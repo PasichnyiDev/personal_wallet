@@ -15,14 +15,30 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
-from .utils_for_urls import ADMIN_URL_CONSTANT, GET_URLS_CONSTANT, CUSTOM_USER_URL_CONSTANT, CUSTOM_USER_APP_NAME, \
-                            URLS_FILE_CONSTANT, WALLET_BASE_URL, WALLET_APP_NAME
+from .routes_util import routes_util
 from .views import get_all_urls
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title="PersonalWallet API",
+        default_version='v1',
+        description="Simple API to manage your own wallets.",
+        # terms_of_service="https://www.example.com/terms/",
+        # contact=openapi.Contact(email="contact@example.com"),
+        # license=openapi.License(name="Your License"),
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
+)
+
 urlpatterns = [
-    path(ADMIN_URL_CONSTANT, admin.site.urls),
-    path(GET_URLS_CONSTANT, get_all_urls),
-    path(CUSTOM_USER_URL_CONSTANT, include('{}.{}'.format(CUSTOM_USER_APP_NAME, URLS_FILE_CONSTANT))),
-    path(WALLET_BASE_URL, include('{}.{}'.format(WALLET_APP_NAME, URLS_FILE_CONSTANT))),
+    path(routes_util.admin_url(), admin.site.urls, name=routes_util.admin_url_name()),
+    path(routes_util.get_urls_url(), get_all_urls, name=routes_util.get_urls_url_name()),
+    path(routes_util.users_base_url(), include(routes_util.get_users_url_file_name())),
+    path(routes_util.wallets_base_url(), include(routes_util.get_wallets_url_file_name())),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

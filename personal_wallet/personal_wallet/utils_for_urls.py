@@ -50,6 +50,7 @@ def get_expense_base_url(for_frontend: bool = True):
     return expense_base_url
 
 
+EXPENSES_URL_KEY = 'expenses'
 EXPENSE_ID_CONSTANT = '<int:expense_id>'
 
 
@@ -78,6 +79,7 @@ def get_income_base_url(for_frontend: bool = True):
     return income_base_url
 
 
+INCOMES_URL_KEY = 'incomes'
 INCOME_ID_CONSTANT = '<int:income_id>'
 
 

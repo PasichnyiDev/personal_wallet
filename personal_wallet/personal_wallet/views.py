@@ -1,15 +1,12 @@
-import json
-
 from rest_framework.decorators import api_view
-from rest_framework.request import HttpRequest
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
-from .utils_for_urls import URLS_FOR_FRONTEND
+from .routes_util import routes_util
 
 
 @api_view(['GET'])
-def get_all_urls(request: HttpRequest) -> Response:
+def get_all_urls(request) -> Response:
     """
     View provides getting a json object with all project urls.
 
@@ -17,4 +14,5 @@ def get_all_urls(request: HttpRequest) -> Response:
 
     :return: Response: JSON object with all project urls.
     """
-    return Response(data=URLS_FOR_FRONTEND, status=HTTP_200_OK)
+    print('[USER IS AUTHENTICATED]: {}.'.format(request.user.is_authenticated))
+    return Response(data=routes_util.get_all_project_urls(), status=HTTP_200_OK)
