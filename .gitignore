@@ -1,1 +1,3 @@
 /personal_wallet/users/migrations/
+/personal_wallet/wallets/migrations
+personal_wallet/db.sqlite3
