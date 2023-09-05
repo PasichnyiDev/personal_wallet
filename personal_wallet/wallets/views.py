@@ -2,7 +2,8 @@ from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_422_UNPROCESSABLE_ENTITY
+from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_422_UNPROCESSABLE_ENTITY, \
+    HTTP_400_BAD_REQUEST
 
 from users.models import WalletUser
 from .models import Wallet, Expense, Income
@@ -68,7 +69,7 @@ class WalletViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
-        return Response({WALLET_KEY: serializer.data}, status=HTTP_201_CREATED, headers=headers)
+        return Response(serializer.data, status=HTTP_201_CREATED, headers=headers)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -76,12 +77,11 @@ class WalletViewSet(viewsets.ModelViewSet):
         return Response({MESSAGE_KEY: 'Success'}, status=HTTP_204_NO_CONTENT)
 
     def list(self, request, *args, **kwargs):
-        return Response({WALLETS_KEY: WalletSerializer(Wallet.objects.filter(user=request.user.pk), many=True).data})
+        return Response(WalletSerializer(Wallet.objects.filter(user=request.user.pk), many=True).data)
 
 
 class ExpenseViewSet(
     mixins.CreateModelMixin,
-    # mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     mixins.ListModelMixin,
     viewsets.GenericViewSet
@@ -112,50 +112,6 @@ class ExpenseViewSet(
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response({EXPENSE_KEY: serializer.data}, status=HTTP_201_CREATED)
-
-    # def partial_update(self, request, *args, **kwargs):
-    #
-    #     expense_amount = request.data.get(EXPENSE_INCOME_AMOUNT_KEY)
-    #     expense_type = request.data.get(EXPENSE_INCOME_TYPE_KEY)
-    #     wallet = Wallet.objects.get(id=kwargs.get(WALLET_ID_KEY))
-    #
-    #     if expense_amount:
-    #         balance_before_current_expense = wa
-    #         possible_balance = wallet.current_balance - float(expense_amount)
-    #         if not wallet.is_credit_wallet and possible_balance < 0:
-    #             return Response(
-    #                 {MESSAGE_KEY: 'Too big expense amount for not credit wallet'}, status=HTTP_422_UNPROCESSABLE_ENTITY
-    #             )
-    #         else:
-    #             wallet.current_balance = possible_balance
-    #             balance_after = possible_balance
-    #             instance = Expense.objects.get(id=request.data.get(ID_KEY))
-    #             serializer = ExpenseSerializer(
-    #                 instance=instance,
-    #                 data={
-    #                     EXPENSE_INCOME_AMOUNT_KEY: expense_amount,
-    #                     EXPENSE_INCOME_TYPE_KEY: expense_type if expense_type else instance.expense_type,
-    #                     EXPENSE_INCOME_BALANCE_AFTER_KEY: balance_after,
-    #                     WALLET_KEY: wallet
-    #                 }
-    #             )
-    #             serializer.is_valid(raise_exception=True)
-    #             serializer.save()
-    #             return Response({EXPENSE_KEY: serializer.data})
-    #     else:
-    #         instance = Expense.objects.get(id=request.data.get(ID_KEY))
-    #         serializer = ExpenseSerializer(
-    #             instance=instance,
-    #             data={
-    #                 EXPENSE_INCOME_AMOUNT_KEY: instance.amount,
-    #                 EXPENSE_INCOME_TYPE_KEY: expense_type if expense_type else instance.expense_type,
-    #                 EXPENSE_INCOME_BALANCE_AFTER_KEY: instance.balance_after,
-    #                 WALLET_KEY: wallet
-    #             }
-    #         )
-    #         serializer.is_valid(raise_exception=True)
-    #         serializer.save()
-    #         return Response({EXPENSE_KEY: serializer.data})
 
     def destroy(self, request, *args, **kwargs):
         instance = Expense.objects.get(id=kwargs.get(EXPENSE_ID_KEY))
@@ -194,25 +150,6 @@ class IncomeViewSet(
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({INCOME_KEY: serializer.data}, status=HTTP_201_CREATED)
-
-    # def partial_update(self, request, *args, **kwargs):
-    #     income_amount = request.data.get(EXPENSE_INCOME_AMOUNT_KEY)
-    #     income_type = request.data.get(EXPENSE_INCOME_TYPE_KEY)
-    #     wallet = Wallet.objects.get(id=kwargs.get(WALLET_ID_KEY))
-    #
-    #     wallet.current_balance += float(income_amount)
-    #     balance_after = wallet.current_balance
-    #     serializer = ExpenseSerializer(
-    #         data={
-    #             EXPENSE_INCOME_AMOUNT_KEY: income_amount,
-    #             EXPENSE_INCOME_TYPE_KEY: income_type,
-    #             EXPENSE_INCOME_BALANCE_AFTER_KEY: balance_after,
-    #             WALLET_KEY: wallet
-    #         }
-    #     )
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
-    #     return Response({INCOME_KEY: serializer.data}, status=HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         instance = Income.objects.get(id=kwargs.get(INCOME_ID_KEY))
