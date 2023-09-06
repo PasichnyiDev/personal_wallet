@@ -37,7 +37,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('/', RedirectView.as_view(url=routes_util.get_urls_url())),
+    path('', RedirectView.as_view(url=routes_util.get_urls_url())),
     path(routes_util.admin_url(), admin.site.urls, name=routes_util.admin_url_name()),
     path(routes_util.get_urls_url(), get_all_urls, name=routes_util.get_urls_url_name()),
     path(routes_util.users_base_url(), include(routes_util.get_users_url_file_name())),
