@@ -142,3 +142,5 @@ SIMPLE_JWT = {
 
 # custom user
 AUTH_USER_MODEL = 'users.WalletUser'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
