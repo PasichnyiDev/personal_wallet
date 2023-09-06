@@ -14,5 +14,4 @@ def get_all_urls(request) -> Response:
 
     :return: Response: JSON object with all project urls.
     """
-    print('[USER IS AUTHENTICATED]: {}.'.format(request.user.is_authenticated))
     return Response(data=routes_util.get_all_project_urls(), status=HTTP_200_OK)

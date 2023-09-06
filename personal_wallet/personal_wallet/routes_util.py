@@ -34,6 +34,11 @@ class ProjectURLs:
         self.__incomes_base_url = 'incomes/'
         self.__incomes_id_lookup = '<int:income_id>/'
 
+        # choices urls
+        self.__currency_choices_url = 'currency_choices/'
+        self.__expenses_choices_url = 'expenses_choices/'
+        self.__incomes_choices_url = 'incomes_choices/'
+
         # users app
         self.__users_app_name = 'users'
 
@@ -185,6 +190,30 @@ class ProjectURLs:
     def incomes_list_url_name(self):
         return self.__incomes_base_url[:-1] + self.__url_name_sep + self.__list_view_constant[:-1]
 
+    def currency_choices_url(self, for_frontend: bool):
+        if for_frontend:
+            return self.__wallets_base_url + self.__currency_choices_url
+        return self.__currency_choices_url
+
+    def currency_choices_url_name(self):
+        return self.__currency_choices_url[:-9] + self.__url_name_sep + self.__currency_choices_url[9:-1]
+
+    def expenses_choices_url(self, for_frontend: bool):
+        if for_frontend:
+            return self.__wallets_base_url + self.__expenses_base_url + self.__expenses_choices_url
+        return self.__expenses_base_url + self.__expenses_choices_url
+
+    def expenses_choices_url_name(self):
+        return self.__expenses_choices_url[:-9] + self.__url_name_sep + self.__expenses_choices_url[9:-1]
+
+    def incomes_choices_url(self, for_frontend: bool):
+        if for_frontend:
+            return self.__wallets_base_url + self.__incomes_base_url + self.__incomes_choices_url
+        return self.__incomes_base_url + self.__incomes_choices_url
+
+    def incomes_choices_url_name(self):
+        return self.__incomes_choices_url[:-9] + self.__url_name_sep + self.__incomes_choices_url[8:-1]
+
     def get_all_general_project_urls(self):
         general_project_urls_key = 'general_project_urls'
         return {
@@ -212,7 +241,8 @@ class ProjectURLs:
                 {self.__detail_view_constant[:-1]: self.wallets_detail_url(for_frontend=True)},
                 {self.__update_view_constant[:-1]: self.wallets_update_url(for_frontend=True)},
                 {self.__delete_view_constant[:-1]: self.wallets_delete_url(for_frontend=True)},
-                {self.__list_view_constant[:-1]: self.wallets_list_url(for_frontend=True)}
+                {self.__list_view_constant[:-1]: self.wallets_list_url(for_frontend=True)},
+                {self.currency_choices_url_name(): self.currency_choices_url(for_frontend=True)}
             ]
         }
 
@@ -222,7 +252,8 @@ class ProjectURLs:
             expenses_urls_key: [
                 {self.__create_view_constant[:-1]: self.expenses_create_url(for_frontend=True)},
                 {self.__delete_view_constant[:-1]: self.expenses_delete_url(for_frontend=True)},
-                {self.__list_view_constant[:-1]: self.expenses_list_url(for_frontend=True)}
+                {self.__list_view_constant[:-1]: self.expenses_list_url(for_frontend=True)},
+                {self.expenses_choices_url_name(): self.expenses_choices_url(for_frontend=True)}
             ]
         }
 
@@ -232,7 +263,8 @@ class ProjectURLs:
             incomes_urls_key: [
                 {self.__create_view_constant[:-1]: self.incomes_create_url(for_frontend=True)},
                 {self.__delete_view_constant[:-1]: self.incomes_delete_url(for_frontend=True)},
-                {self.__list_view_constant[:-1]: self.incomes_list_url(for_frontend=True)}
+                {self.__list_view_constant[:-1]: self.incomes_list_url(for_frontend=True)},
+                {self.incomes_choices_url_name(): self.incomes_choices_url(for_frontend=True)}
             ]
         }
 
@@ -260,125 +292,125 @@ routes_util = ProjectURLs()
 
 if __name__ == '__main__':
     u = ProjectURLs()
-    print('[GENERAL]:')
-    print(f'[NAME]: {u.admin_url_name()}')
-    print(f'[URL]: {u.admin_url()}')
-    print(f'[NAME]: {u.get_urls_url_name()}')
-    print(f'[URL]: {u.get_urls_url()}')
-    print()
-
-    print('[USERS]:')
-    # registration
-    print(f'[URL NAME]: {u.users_registration_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.users_registration_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.users_registration_url(for_frontend=False)}')
-    print()
-    # obtain token
-    print(f'[URL NAME]: {u.users_obtain_token_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.users_obtain_token_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.users_obtain_token_url(for_frontend=False)}')
-    print()
-    # refresh token
-    print(f'[URL NAME]: {u.users_refresh_token_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.users_refresh_token_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.users_refresh_token_url(for_frontend=False)}')
-    print()
-
-    print('[WALLETS]:')
-    # create
-    print(f'[URL NAME]: {u.wallets_create_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.wallets_create_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.wallets_create_url(for_frontend=False)}')
-    print()
-    # detail
-    print(f'[URL NAME]: {u.wallets_detail_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.wallets_detail_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.wallets_detail_url(for_frontend=False)}')
-    print()
-    # update
-    print(f'[URL NAME]: {u.wallets_update_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.wallets_update_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.wallets_update_url(for_frontend=False)}')
-    print()
-    # delete
-    print(f'[URL NAME]: {u.wallets_delete_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.wallets_delete_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.wallets_delete_url(for_frontend=False)}')
-    print()
-    # list
-    print(f'[URL NAME]: {u.wallets_list_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.wallets_list_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.wallets_list_url(for_frontend=False)}')
-    print()
-
-    print('[WALLETS]:')
-    # create
-    print(f'[URL NAME]: {u.wallets_create_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.wallets_create_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.wallets_create_url(for_frontend=False)}')
-    print()
-    # detail
-    print(f'[URL NAME]: {u.wallets_detail_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.wallets_detail_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.wallets_detail_url(for_frontend=False)}')
-    print()
-    # update
-    print(f'[URL NAME]: {u.wallets_update_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.wallets_update_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.wallets_update_url(for_frontend=False)}')
-    print()
-    # delete
-    print(f'[URL NAME]: {u.wallets_delete_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.wallets_delete_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.wallets_delete_url(for_frontend=False)}')
-    print()
-    # list
-    print(f'[URL NAME]: {u.wallets_list_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.wallets_list_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.wallets_list_url(for_frontend=False)}')
-    print()
-
-    print('[EXPENSES]:')
-    # create
-    print(f'[URL NAME]: {u.expenses_create_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.expenses_create_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.expenses_create_url(for_frontend=False)}')
-    print()
-    # delete
-    print(f'[URL NAME]: {u.expenses_delete_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.expenses_delete_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.expenses_delete_url(for_frontend=False)}')
-    print()
-    # list
-    print(f'[URL NAME]: {u.expenses_list_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.expenses_list_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.expenses_list_url(for_frontend=False)}')
-    print()
-
-    print('[INCOMES]:')
-    # create
-    print(f'[URL NAME]: {u.incomes_create_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.incomes_create_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.incomes_create_url(for_frontend=False)}')
-    print()
-    # delete
-    print(f'[URL NAME]: {u.incomes_delete_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.incomes_delete_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.incomes_delete_url(for_frontend=False)}')
-    print()
-    # list
-    print(f'[URL NAME]: {u.incomes_list_url_name()}')
-    print(f'[URL] [FRONTEND]: {u.incomes_list_url(for_frontend=True)}')
-    print(f'[URL] [BACKEND]: {u.incomes_list_url(for_frontend=False)}')
-    print()
-    print()
-
-    # aggregate
-    print(u.get_all_general_project_urls())
-    print(u.get_all_users_urls())
-    print(u.get_all_wallets_urls())
-    print(u.get_all_expenses_urls())
-    print(u.get_all_incomes_urls())
-
+    # print('[GENERAL]:')
+    # print(f'[NAME]: {u.admin_url_name()}')
+    # print(f'[URL]: {u.admin_url()}')
+    # print(f'[NAME]: {u.get_urls_url_name()}')
+    # print(f'[URL]: {u.get_urls_url()}')
+    # print()
+    #
+    # print('[USERS]:')
+    # # registration
+    # print(f'[URL NAME]: {u.users_registration_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.users_registration_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.users_registration_url(for_frontend=False)}')
+    # print()
+    # # obtain token
+    # print(f'[URL NAME]: {u.users_obtain_token_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.users_obtain_token_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.users_obtain_token_url(for_frontend=False)}')
+    # print()
+    # # refresh token
+    # print(f'[URL NAME]: {u.users_refresh_token_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.users_refresh_token_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.users_refresh_token_url(for_frontend=False)}')
+    # print()
+    #
+    # print('[WALLETS]:')
+    # # create
+    # print(f'[URL NAME]: {u.wallets_create_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.wallets_create_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.wallets_create_url(for_frontend=False)}')
+    # print()
+    # # detail
+    # print(f'[URL NAME]: {u.wallets_detail_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.wallets_detail_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.wallets_detail_url(for_frontend=False)}')
+    # print()
+    # # update
+    # print(f'[URL NAME]: {u.wallets_update_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.wallets_update_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.wallets_update_url(for_frontend=False)}')
+    # print()
+    # # delete
+    # print(f'[URL NAME]: {u.wallets_delete_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.wallets_delete_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.wallets_delete_url(for_frontend=False)}')
+    # print()
+    # # list
+    # print(f'[URL NAME]: {u.wallets_list_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.wallets_list_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.wallets_list_url(for_frontend=False)}')
+    # print()
+    #
+    # print('[WALLETS]:')
+    # # create
+    # print(f'[URL NAME]: {u.wallets_create_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.wallets_create_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.wallets_create_url(for_frontend=False)}')
+    # print()
+    # # detail
+    # print(f'[URL NAME]: {u.wallets_detail_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.wallets_detail_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.wallets_detail_url(for_frontend=False)}')
+    # print()
+    # # update
+    # print(f'[URL NAME]: {u.wallets_update_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.wallets_update_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.wallets_update_url(for_frontend=False)}')
+    # print()
+    # # delete
+    # print(f'[URL NAME]: {u.wallets_delete_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.wallets_delete_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.wallets_delete_url(for_frontend=False)}')
+    # print()
+    # # list
+    # print(f'[URL NAME]: {u.wallets_list_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.wallets_list_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.wallets_list_url(for_frontend=False)}')
+    # print()
+    #
+    # print('[EXPENSES]:')
+    # # create
+    # print(f'[URL NAME]: {u.expenses_create_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.expenses_create_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.expenses_create_url(for_frontend=False)}')
+    # print()
+    # # delete
+    # print(f'[URL NAME]: {u.expenses_delete_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.expenses_delete_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.expenses_delete_url(for_frontend=False)}')
+    # print()
+    # # list
+    # print(f'[URL NAME]: {u.expenses_list_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.expenses_list_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.expenses_list_url(for_frontend=False)}')
+    # print()
+    #
+    # print('[INCOMES]:')
+    # # create
+    # print(f'[URL NAME]: {u.incomes_create_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.incomes_create_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.incomes_create_url(for_frontend=False)}')
+    # print()
+    # # delete
+    # print(f'[URL NAME]: {u.incomes_delete_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.incomes_delete_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.incomes_delete_url(for_frontend=False)}')
+    # print()
+    # # list
+    # print(f'[URL NAME]: {u.incomes_list_url_name()}')
+    # print(f'[URL] [FRONTEND]: {u.incomes_list_url(for_frontend=True)}')
+    # print(f'[URL] [BACKEND]: {u.incomes_list_url(for_frontend=False)}')
+    # print()
+    # print()
+    #
+    # # aggregate
+    # print(u.get_all_general_project_urls())
+    # print(u.get_all_users_urls())
+    # print(u.get_all_wallets_urls())
+    # print(u.get_all_expenses_urls())
+    # print(u.get_all_incomes_urls())
+    #
     # get all urls
     print(u.get_all_project_urls())

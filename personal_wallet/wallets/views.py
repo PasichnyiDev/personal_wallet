@@ -2,15 +2,18 @@ from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_422_UNPROCESSABLE_ENTITY, \
-    HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_422_UNPROCESSABLE_ENTITY
+from rest_framework.decorators import api_view
 
 from users.models import WalletUser
 from .models import Wallet, Expense, Income
-from .serializers import WalletSerializer, ExpenseSerializer, IncomeSerializer
+from .serializers import WalletSerializer, ExpenseSerializer, IncomeSerializer, \
+                         CurrencyChoiceSerializer, ExpensesChoiceSerializer, IncomesChoiceSerializer
+from .choices import CURRENCY_CHOICES, EXPENSES_CHOICES, INCOMES_CHOICES
+
+REQUEST_GET = 'GET'
 
 ID_KEY = 'id'
-
 WALLET_KEY = 'wallet'
 WALLETS_KEY = 'wallets'
 WALLET_NAME_KEY = 'name'
@@ -160,3 +163,33 @@ class IncomeViewSet(
         return Response(
             {EXPENSES_KEY: IncomeSerializer(Income.objects.filter(wallet=kwargs.get(INCOME_ID_KEY)), many=True).data}
         )
+
+
+@api_view([REQUEST_GET])
+def get_expenses_choices(request):
+    expenses_choices = [
+        {'expenses_code': code, 'expenses_description': description}
+        for code, description in EXPENSES_CHOICES
+    ]
+    serializer = ExpensesChoiceSerializer(expenses_choices, many=True)
+    return Response(serializer.data)
+
+
+@api_view([REQUEST_GET])
+def get_incomes_choices(request):
+    incomes_choices = [
+        {'incomes_code': code, 'incomes_description': description}
+        for code, description in INCOMES_CHOICES
+    ]
+    serializer = IncomesChoiceSerializer(incomes_choices, many=True)
+    return Response(serializer.data)
+
+
+@api_view([REQUEST_GET])
+def get_currency_choices(request):
+    currency_choices = [
+        {'currency_code': code, 'currency_name': name}
+        for code, name in CURRENCY_CHOICES
+    ]
+    serializer = CurrencyChoiceSerializer(currency_choices, many=True)
+    return Response(serializer.data)

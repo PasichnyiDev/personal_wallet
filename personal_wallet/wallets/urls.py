@@ -1,10 +1,8 @@
 from django.urls import path
 
-from personal_wallet.utils_for_urls import LIST_VIEW_CONSTANT, CREATE_VIEW_CONSTANT, DETAIL_VIEW_CONSTANT, \
-    UPDATE_VIEW_CONSTANT, DELETE_VIEW_CONSTANT, WALLET_ID_CONSTANT, \
-    EXPENSES_URL_KEY, EXPENSE_ID_CONSTANT, INCOMES_URL_KEY, INCOME_ID_CONSTANT
 from personal_wallet.routes_util import routes_util
-from .views import WalletViewSet, ExpenseViewSet, IncomeViewSet
+from .views import WalletViewSet, ExpenseViewSet, IncomeViewSet, \
+                   get_currency_choices, get_expenses_choices, get_incomes_choices
 
 urlpatterns = [
     # wallets urls
@@ -33,6 +31,11 @@ urlpatterns = [
         view=WalletViewSet.as_view({'get': 'list'}),
         name=routes_util.wallets_list_url_name()
     ),
+    path(
+        route=routes_util.currency_choices_url(for_frontend=False),
+        view=get_currency_choices,
+        name=routes_util.currency_choices_url_name()
+    ),
 
     # expenses urls
     path(
@@ -50,6 +53,11 @@ urlpatterns = [
         view=ExpenseViewSet.as_view({'get': 'list'}),
         name=routes_util.expenses_list_url_name()
     ),
+    path(
+        route=routes_util.expenses_choices_url(for_frontend=False),
+        view=get_expenses_choices,
+        name=routes_util.expenses_choices_url_name()
+    ),
 
     # incomes urls
     path(
@@ -66,5 +74,10 @@ urlpatterns = [
         route=routes_util.incomes_list_url(for_frontend=False),
         view=IncomeViewSet.as_view({'get': 'list'}),
         name=routes_util.incomes_list_url_name()
+    ),
+    path(
+        route=routes_util.incomes_choices_url(for_frontend=False),
+        view=get_incomes_choices,
+        name=routes_util.incomes_choices_url_name()
     ),
 ]
