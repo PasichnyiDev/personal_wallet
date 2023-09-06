@@ -1,1 +1,1 @@
-web: gunicorn personal_wallet.personal_wallet.wsgi
+web: gunicorn personal_wallet.wsgi
