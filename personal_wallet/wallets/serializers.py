@@ -8,6 +8,16 @@ class WalletSerializer(serializers.ModelSerializer):
         model = Wallet
         fields = '__all__'
 
+    def update(self, instance, validated_data):
+        if ("currency" in self.initial_data) or \
+           ('initial_balance' in self.initial_data) or \
+           ("current_balance" in self.initial_data) or \
+           ("date_created" in self.initial_data) or \
+           ("is_credit_wallet" in self.initial_data) or \
+           ("user" in self.initial_data):
+            raise serializers.ValidationError()
+        return super().update(instance, validated_data)
+
 
 class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:

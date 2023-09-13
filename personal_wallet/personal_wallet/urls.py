@@ -13,6 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import permissions
@@ -28,12 +30,13 @@ schema_view = get_schema_view(
         title="PersonalWallet API",
         default_version='v1',
         description="Simple API to manage your own wallets.",
-        # terms_of_service="https://www.example.com/terms/",
-        # contact=openapi.Contact(email="contact@example.com"),
-        # license=openapi.License(name="Your License"),
+        terms_of_service="https://www.example.com/terms/",
+        contact=openapi.Contact(email="contact@example.com"),
+        license=openapi.License(name="Your License"),
     ),
     public=True,
-    permission_classes=[permissions.AllowAny],
+    permission_classes=[permissions.IsAuthenticatedOrReadOnly, permissions.AllowAny],
+    authentication_classes=[]
 )
 
 urlpatterns = [
@@ -42,5 +45,9 @@ urlpatterns = [
     path(routes_util.get_urls_url(), get_all_urls, name=routes_util.get_urls_url_name()),
     path(routes_util.users_base_url(), include(routes_util.get_users_url_file_name())),
     path(routes_util.wallets_base_url(), include(routes_util.get_wallets_url_file_name())),
+    path(routes_util.statistics_base_url(), include(routes_util.get_statistics_url_file_name())),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

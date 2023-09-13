@@ -19,7 +19,7 @@ class Expense(models.Model):
 
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     type = models.CharField(max_length=50, choices=EXPENSES_CHOICES)
-    date_created = models.DateField(auto_now_add=True)
+    date_created = models.DateField()
     balance_after = models.DecimalField(max_digits=20, decimal_places=2)
     wallet = models.ForeignKey(to=Wallet, on_delete=models.CASCADE)
 
@@ -28,6 +28,6 @@ class Income(models.Model):
 
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     type = models.CharField(max_length=50, choices=INCOMES_CHOICES)
-    date_created = models.DateField(auto_now_add=True)
+    date_created = models.DateField()
     balance_after = models.DecimalField(max_digits=20, decimal_places=2)
     wallet = models.ForeignKey(to=Wallet, on_delete=models.CASCADE)

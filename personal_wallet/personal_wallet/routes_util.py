@@ -29,6 +29,7 @@ class ProjectURLs:
         # expenses urls
         self.__expenses_base_url = 'expenses/'
         self.__expenses_id_lookup = '<int:expense_id>/'
+        self.__expenses_type_lookup = '<str:type>/'
 
         # incomes urls
         self.__incomes_base_url = 'incomes/'
@@ -39,11 +40,22 @@ class ProjectURLs:
         self.__expenses_choices_url = 'expenses_choices/'
         self.__incomes_choices_url = 'incomes_choices/'
 
+        # statistics urls
+        self.__statistics_base_url = 'statistics/'
+        self.__statistic_total_url = 'total/'
+        self.__statistics_expenses_total_url_name = 'expenses-total'
+        self.__statistics_incomes_total_url_name = 'incomes-total'
+        self.__statistics_expenses_by_type_name_addition = 'expenses-by-type'
+        self.__statistics_incomes_by_type_name_addition = 'incomes-by-type'
+
         # users app
         self.__users_app_name = 'users'
 
         # wallets app
         self.__wallets_app_name = 'wallets'
+
+        # statistics app
+        self.__statistics_app_name = 'wallet_statistics'
 
         self.__urls_file_name = 'urls'
 
@@ -214,6 +226,50 @@ class ProjectURLs:
     def incomes_choices_url_name(self):
         return self.__incomes_choices_url[:-9] + self.__url_name_sep + self.__incomes_choices_url[8:-1]
 
+    # statistic urls
+    def statistics_base_url(self):
+        return self.__statistics_base_url
+
+    def statistics_expenses_by_type_url(self, for_frontend: bool):
+        if for_frontend:
+            return self.__statistics_base_url + self.__expenses_base_url + self.__frontend_first_lookup_constant + \
+                   self.__frontend_second_lookup_constant
+        return self.__expenses_base_url + self.__wallets_id_lookup + \
+            self.__expenses_type_lookup
+
+    def statistics_expenses_by_type_url_name(self):
+        return self.__statistics_base_url[:-1] + self.__url_name_sep + \
+               self.__statistics_expenses_by_type_name_addition
+
+    def statistics_incomes_by_type_url(self, for_frontend: bool):
+        if for_frontend:
+            return self.__statistics_base_url + self.__incomes_base_url + self.__frontend_first_lookup_constant + \
+                   self.__frontend_second_lookup_constant
+        return self.__incomes_base_url + self.__wallets_id_lookup + \
+            self.__expenses_type_lookup
+
+    def statistics_incomes_by_type_url_name(self):
+        return self.__statistics_base_url[:-1] + self.__url_name_sep + \
+               self.__statistics_incomes_by_type_name_addition
+
+    def statistics_expenses_total_url(self, for_frontend: bool):
+        if for_frontend:
+            return self.__statistics_base_url + self.__statistic_total_url + self.__expenses_base_url + \
+                   self.__frontend_first_lookup_constant
+        return self.__statistic_total_url + self.__expenses_base_url + self.__wallets_id_lookup
+
+    def statistics_expenses_total_url_name(self):
+        return self.__statistics_expenses_total_url_name
+
+    def statistics_incomes_total_url(self, for_frontend: bool):
+        if for_frontend:
+            return self.__statistics_base_url + self.__statistic_total_url + self.__incomes_base_url + \
+                   self.__frontend_first_lookup_constant
+        return self.__statistic_total_url + self.__incomes_base_url + self.__wallets_id_lookup
+
+    def statistics_incomes_total_url_name(self):
+        return self.__statistics_incomes_total_url_name
+
     def get_all_general_project_urls(self):
         general_project_urls_key = 'general_project_urls'
         return {
@@ -268,6 +324,17 @@ class ProjectURLs:
             ]
         }
 
+    def get_all_statistics_urls(self):
+        statistics_urls_key = 'statistics'
+        return {
+            statistics_urls_key: [
+                {self.statistics_expenses_by_type_url_name(): self.statistics_expenses_by_type_url(for_frontend=True)},
+                {self.statistics_incomes_by_type_url_name(): self.statistics_expenses_by_type_url(for_frontend=True)},
+                {self.statistics_expenses_total_url_name(): self.statistics_expenses_total_url(for_frontend=True)},
+                {self.statistics_incomes_total_url_name(): self.statistics_incomes_total_url(for_frontend=True)}
+            ]
+        }
+
     def get_all_project_urls(self):
         urls_key = 'urls'
         return {
@@ -277,6 +344,7 @@ class ProjectURLs:
                 self.get_all_wallets_urls(),
                 self.get_all_expenses_urls(),
                 self.get_all_incomes_urls(),
+                self.get_all_statistics_urls()
             ]
         }
 
@@ -286,131 +354,12 @@ class ProjectURLs:
     def get_wallets_url_file_name(self):
         return self.__wallets_app_name + '.' + self.__urls_file_name
 
+    def get_statistics_url_file_name(self):
+        return self.__statistics_app_name + '.' + self.__urls_file_name
+
 
 routes_util = ProjectURLs()
 
-
-if __name__ == '__main__':
-    u = ProjectURLs()
-    # print('[GENERAL]:')
-    # print(f'[NAME]: {u.admin_url_name()}')
-    # print(f'[URL]: {u.admin_url()}')
-    # print(f'[NAME]: {u.get_urls_url_name()}')
-    # print(f'[URL]: {u.get_urls_url()}')
-    # print()
-    #
-    # print('[USERS]:')
-    # # registration
-    # print(f'[URL NAME]: {u.users_registration_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.users_registration_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.users_registration_url(for_frontend=False)}')
-    # print()
-    # # obtain token
-    # print(f'[URL NAME]: {u.users_obtain_token_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.users_obtain_token_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.users_obtain_token_url(for_frontend=False)}')
-    # print()
-    # # refresh token
-    # print(f'[URL NAME]: {u.users_refresh_token_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.users_refresh_token_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.users_refresh_token_url(for_frontend=False)}')
-    # print()
-    #
-    # print('[WALLETS]:')
-    # # create
-    # print(f'[URL NAME]: {u.wallets_create_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.wallets_create_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.wallets_create_url(for_frontend=False)}')
-    # print()
-    # # detail
-    # print(f'[URL NAME]: {u.wallets_detail_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.wallets_detail_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.wallets_detail_url(for_frontend=False)}')
-    # print()
-    # # update
-    # print(f'[URL NAME]: {u.wallets_update_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.wallets_update_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.wallets_update_url(for_frontend=False)}')
-    # print()
-    # # delete
-    # print(f'[URL NAME]: {u.wallets_delete_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.wallets_delete_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.wallets_delete_url(for_frontend=False)}')
-    # print()
-    # # list
-    # print(f'[URL NAME]: {u.wallets_list_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.wallets_list_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.wallets_list_url(for_frontend=False)}')
-    # print()
-    #
-    # print('[WALLETS]:')
-    # # create
-    # print(f'[URL NAME]: {u.wallets_create_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.wallets_create_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.wallets_create_url(for_frontend=False)}')
-    # print()
-    # # detail
-    # print(f'[URL NAME]: {u.wallets_detail_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.wallets_detail_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.wallets_detail_url(for_frontend=False)}')
-    # print()
-    # # update
-    # print(f'[URL NAME]: {u.wallets_update_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.wallets_update_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.wallets_update_url(for_frontend=False)}')
-    # print()
-    # # delete
-    # print(f'[URL NAME]: {u.wallets_delete_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.wallets_delete_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.wallets_delete_url(for_frontend=False)}')
-    # print()
-    # # list
-    # print(f'[URL NAME]: {u.wallets_list_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.wallets_list_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.wallets_list_url(for_frontend=False)}')
-    # print()
-    #
-    # print('[EXPENSES]:')
-    # # create
-    # print(f'[URL NAME]: {u.expenses_create_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.expenses_create_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.expenses_create_url(for_frontend=False)}')
-    # print()
-    # # delete
-    # print(f'[URL NAME]: {u.expenses_delete_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.expenses_delete_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.expenses_delete_url(for_frontend=False)}')
-    # print()
-    # # list
-    # print(f'[URL NAME]: {u.expenses_list_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.expenses_list_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.expenses_list_url(for_frontend=False)}')
-    # print()
-    #
-    # print('[INCOMES]:')
-    # # create
-    # print(f'[URL NAME]: {u.incomes_create_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.incomes_create_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.incomes_create_url(for_frontend=False)}')
-    # print()
-    # # delete
-    # print(f'[URL NAME]: {u.incomes_delete_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.incomes_delete_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.incomes_delete_url(for_frontend=False)}')
-    # print()
-    # # list
-    # print(f'[URL NAME]: {u.incomes_list_url_name()}')
-    # print(f'[URL] [FRONTEND]: {u.incomes_list_url(for_frontend=True)}')
-    # print(f'[URL] [BACKEND]: {u.incomes_list_url(for_frontend=False)}')
-    # print()
-    # print()
-    #
-    # # aggregate
-    # print(u.get_all_general_project_urls())
-    # print(u.get_all_users_urls())
-    # print(u.get_all_wallets_urls())
-    # print(u.get_all_expenses_urls())
-    # print(u.get_all_incomes_urls())
-    #
-    # get all urls
-    print(u.get_all_project_urls())
+if __name__ == "__main__":
+    print(routes_util.statistics_expenses_by_type_url(for_frontend=False))
+    print(routes_util.statistics_incomes_by_type_url_name())
