@@ -43,8 +43,14 @@ class ProjectURLs:
         # statistics urls
         self.__statistics_base_url = 'statistics/'
         self.__statistic_total_url = 'total/'
+        self.__statistic_max_url = 'max/'
+        self.__statistics_percentage_url = 'percentage/'
         self.__statistics_expenses_total_url_name = 'expenses-total'
         self.__statistics_incomes_total_url_name = 'incomes-total'
+        self.__statistics_expenses_max_url_name = 'expenses-max'
+        self.__statistics_incomes_max_url_name = 'incomes-max'
+        self.__statistics_expenses_percentage_url_name = 'expenses-percentage'
+        self.__statistics_incomes_percentage_url_name = 'incomes-percentage'
         self.__statistics_expenses_by_type_name_addition = 'expenses-by-type'
         self.__statistics_incomes_by_type_name_addition = 'incomes-by-type'
 
@@ -270,6 +276,42 @@ class ProjectURLs:
     def statistics_incomes_total_url_name(self):
         return self.__statistics_incomes_total_url_name
 
+    def statistics_expenses_max_url(self, for_frontend: bool):
+        if for_frontend:
+            return self.__statistics_base_url + self.__statistic_max_url + self.__expenses_base_url + \
+                   self.__frontend_first_lookup_constant
+        return self.__statistic_max_url + self.__expenses_base_url + self.__wallets_id_lookup
+
+    def statistics_expenses_max_url_name(self):
+        return self.__statistics_expenses_max_url_name
+
+    def statistics_incomes_max_url(self, for_frontend: bool):
+        if for_frontend:
+            return self.__statistics_base_url + self.__statistic_max_url + self.__incomes_base_url + \
+                   self.__frontend_first_lookup_constant
+        return self.__statistic_max_url + self.__incomes_base_url + self.__wallets_id_lookup
+
+    def statistics_incomes_max_url_name(self):
+        return self.__statistics_incomes_max_url_name
+
+    def statistics_expenses_percentage_url(self, for_frontend: bool):
+        if for_frontend:
+            return self.__statistics_base_url + self.__statistics_percentage_url + self.__expenses_base_url + \
+                   self.__frontend_first_lookup_constant
+        return self.__statistics_percentage_url + self.__expenses_base_url + self.__wallets_id_lookup
+
+    def statistics_expenses_percentage_url_name(self):
+        return self.__statistics_expenses_percentage_url_name
+
+    def statistics_incomes_percentage_url(self, for_frontend: bool):
+        if for_frontend:
+            return self.__statistics_base_url + self.__statistics_percentage_url + self.__incomes_base_url + \
+                   self.__frontend_first_lookup_constant
+        return self.__statistics_percentage_url + self.__incomes_base_url + self.__wallets_id_lookup
+
+    def statistics_incomes_percentage_url_name(self):
+        return self.__statistics_incomes_percentage_url_name
+
     def get_all_general_project_urls(self):
         general_project_urls_key = 'general_project_urls'
         return {
@@ -331,7 +373,13 @@ class ProjectURLs:
                 {self.statistics_expenses_by_type_url_name(): self.statistics_expenses_by_type_url(for_frontend=True)},
                 {self.statistics_incomes_by_type_url_name(): self.statistics_expenses_by_type_url(for_frontend=True)},
                 {self.statistics_expenses_total_url_name(): self.statistics_expenses_total_url(for_frontend=True)},
-                {self.statistics_incomes_total_url_name(): self.statistics_incomes_total_url(for_frontend=True)}
+                {self.statistics_incomes_total_url_name(): self.statistics_incomes_total_url(for_frontend=True)},
+                {self.statistics_expenses_max_url_name(): self.statistics_expenses_max_url(for_frontend=True)},
+                {self.statistics_incomes_max_url_name(): self.statistics_incomes_max_url(for_frontend=True)},
+                {self.statistics_expenses_percentage_url_name(): self.statistics_expenses_percentage_url(
+                    for_frontend=True)},
+                {self.statistics_incomes_percentage_url_name(): self.statistics_incomes_percentage_url(
+                    for_frontend=True)},
             ]
         }
 
@@ -359,7 +407,3 @@ class ProjectURLs:
 
 
 routes_util = ProjectURLs()
-
-if __name__ == "__main__":
-    print(routes_util.statistics_expenses_by_type_url(for_frontend=False))
-    print(routes_util.statistics_incomes_by_type_url_name())

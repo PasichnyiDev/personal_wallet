@@ -613,3 +613,216 @@ class IncomesTotalTests(WalletCreationMixin, TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(float(response.data['total']), float(year_total_amount_test))
+
+
+class MaxExpenseTests(WalletCreationMixin, TestCase):
+
+    def setUp(self) -> None:
+        super().setUp()
+        self._create_wallet()
+        self.__statistics_expenses_max_url = reverse(routes_util.statistics_expenses_max_url_name(),
+                                                     kwargs={"wallet_id": self._wallet_id})
+
+    def __create_expense(
+            self,
+            date=None,
+            amount: int = EXPENSE_TEST_AMOUNT,
+            expense_type: str = EXPENSE_TEST_TYPE,
+    ):
+        if date:
+            date = timezone.datetime(*date).date()
+        else:
+            date = timezone.now().date()
+        wallet = Wallet.objects.get(id=self._wallet_id)
+        balance_after = float(wallet.current_balance) - float(amount)
+        wallet.current_balance = balance_after
+        wallet.save()
+
+        return Expense.objects.create(
+            amount=amount,
+            type=expense_type,
+            balance_after=balance_after,
+            date_created=date,
+            wallet=wallet
+        )
+
+    def test_expenses_max(self):
+        # pretest setup
+        test_expenses_amounts = [100, 200, 300, 400]
+        maximum_value = max(test_expenses_amounts)
+        for i in range(len(test_expenses_amounts)):
+            self.__create_expense(amount=test_expenses_amounts[i])
+
+        response = self.client.get(
+            path=self.__statistics_expenses_max_url,
+            format=REQUEST_FORMAT,
+            headers=self._auth_headers
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(float(response.data[EXPENSE_INCOME_AMOUNT_KEY]), float(maximum_value))
+
+    def test_expense_max_by_week(self):
+        # pretest setup
+        week_expenses_values = [100, 200, 300]
+        maximum_value = max(week_expenses_values)
+        month_expenses_values = [400, 500, 600]
+        for i in range(len(week_expenses_values)):
+            now = timezone.now()
+            self.__create_expense(
+                date=(now.year, now.month, (now - timezone.timedelta(days=2)).day),
+                amount=week_expenses_values[i]
+            )
+
+        for i in range(len(month_expenses_values)):
+            now = timezone.now()
+            self.__create_expense(
+                date=(now.year, (now - timezone.timedelta(days=25)).month, now.day),
+                amount=month_expenses_values[i]
+            )
+
+        query_params = {PERIOD_PARAM_KEY: PERIOD_WEEK}
+        response = self.client.get(
+            path=self.__statistics_expenses_max_url,
+            data=query_params,
+            format=REQUEST_FORMAT,
+            headers=self._auth_headers
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(float(response.data[EXPENSE_INCOME_AMOUNT_KEY]), float(maximum_value))
+
+
+class MaxIncomeTests(WalletCreationMixin, TestCase):
+
+    def setUp(self) -> None:
+        super().setUp()
+        self._create_wallet()
+        self.__statistics_incomes_max_url = reverse(routes_util.statistics_incomes_max_url_name(),
+                                                    kwargs={"wallet_id": self._wallet_id})
+
+    def __create_income(
+            self,
+            date=None,
+            amount: int = INCOME_TEST_AMOUNT,
+            income_type: str = INCOME_TEST_TYPE,
+    ):
+        if date:
+            date = timezone.datetime(*date).date()
+        else:
+            date = timezone.now().date()
+        wallet = Wallet.objects.get(id=self._wallet_id)
+        balance_after = float(wallet.current_balance) + float(amount)
+        wallet.current_balance = balance_after
+        wallet.save()
+
+        return Income.objects.create(
+            amount=amount,
+            type=income_type,
+            balance_after=balance_after,
+            date_created=date,
+            wallet=wallet
+        )
+
+    def test_incomes_max(self):
+        # pretest setup
+        test_incomes_amounts = [100, 200, 300, 400]
+        maximum_value = max(test_incomes_amounts)
+        for i in range(len(test_incomes_amounts)):
+            self.__create_income(amount=test_incomes_amounts[i])
+
+        response = self.client.get(
+            path=self.__statistics_incomes_max_url,
+            format=REQUEST_FORMAT,
+            headers=self._auth_headers
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(float(response.data[EXPENSE_INCOME_AMOUNT_KEY]), float(maximum_value))
+
+    def test_income_max_by_week(self):
+        # pretest setup
+        week_incomes_values = [100, 200, 300]
+        maximum_value = max(week_incomes_values)
+        month_incomes_values = [400, 500, 600]
+        for i in range(len(week_incomes_values)):
+            now = timezone.now()
+            self.__create_income(
+                date=(now.year, now.month, (now - timezone.timedelta(days=2)).day),
+                amount=week_incomes_values[i]
+            )
+
+        for i in range(len(month_incomes_values)):
+            now = timezone.now()
+            self.__create_income(
+                date=(now.year, (now - timezone.timedelta(days=25)).month, now.day),
+                amount=month_incomes_values[i]
+            )
+
+        query_params = {PERIOD_PARAM_KEY: PERIOD_WEEK}
+        response = self.client.get(
+            path=self.__statistics_incomes_max_url,
+            data=query_params,
+            format=REQUEST_FORMAT,
+            headers=self._auth_headers
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(float(response.data[EXPENSE_INCOME_AMOUNT_KEY]), float(maximum_value))
+
+
+class ExpensePercentageTests(WalletCreationMixin, TestCase):
+
+    def setUp(self) -> None:
+        super().setUp()
+        self._create_wallet()
+        self.__statistics_expense_percentage_url = reverse(routes_util.statistics_expenses_percentage_url_name(),
+                                                           kwargs={"wallet_id": self._wallet_id})
+
+    def __create_expense(
+            self,
+            date=None,
+            amount: int = EXPENSE_TEST_AMOUNT,
+            expense_type: str = EXPENSE_TEST_TYPE,
+    ):
+        if date:
+            date = timezone.datetime(*date).date()
+        else:
+            date = timezone.now().date()
+        wallet = Wallet.objects.get(id=self._wallet_id)
+        balance_after = float(wallet.current_balance) - float(amount)
+        wallet.current_balance = balance_after
+        wallet.save()
+
+        return Expense.objects.create(
+            amount=amount,
+            type=expense_type,
+            balance_after=balance_after,
+            date_created=date,
+            wallet=wallet
+        )
+
+    def test_expense_percentage(self):
+        # pretest setup
+        expenses_types = ["FOOD", "HEALTH_PR", "INSURANCE"]
+        expenses_first_type_amount = 3
+        expenses_second_type_amount = 2
+        expenses_third_type_amount = 1
+        expenses_types_amounts = [expenses_first_type_amount, expenses_second_type_amount, expenses_third_type_amount]
+        total_expenses = sum(expenses_types_amounts)
+
+        for _ in range(expenses_first_type_amount):
+            self.__create_expense(expense_type=expenses_types[0])
+        for _ in range(expenses_second_type_amount):
+            self.__create_expense(expense_type=expenses_types[1])
+        for _ in range(expenses_third_type_amount):
+            self.__create_expense(expense_type=expenses_types[2])
+
+        response = self.client.get(
+            path=self.__statistics_expense_percentage_url,
+            format=REQUEST_FORMAT,
+            headers=self._auth_headers
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 3)
+        for i in range(len(response.data)):
+            self.assertEqual(response.data[i]['type'], expenses_types[i])
+            self.assertEqual(response.data[i]['percentage'],
+                             round((expenses_types_amounts[i] / total_expenses) * 100, 2))
+
